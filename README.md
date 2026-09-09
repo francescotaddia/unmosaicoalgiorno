@@ -5,16 +5,16 @@ foto e una descrizione. Nessun framework, nessun build: sono solo file HTML/CSS/
 pronti per **GitHub Pages**.
 
 - `index.html` — il mosaico di oggi (rotazione automatica in base alla data)
-- `archivio.html` — griglia di tutti i mosaici
+- `archivio.html` — griglia dei mosaici **già pubblicati** (le date future non si vedono)
 - `mosaico.html?id=…` — scheda del singolo mosaico
 - `data/mosaics.json` — **l'elenco dei mosaici** (l'unico file che aggiorni di solito)
 - `assets/config.js` — nome del sito, lingua di default, pubblicità
 - `assets/app.js`, `assets/style.css` — logica e stile (di norma non si toccano)
 
-Il mosaico del giorno è scelto così:
-`indice = (giorni trascorsi da assets/config.js → epoch) % numero di mosaici`.
-È uguale per tutti i visitatori e la rotazione si allunga da sola man mano che
-aggiungi mosaici.
+Ogni mosaico ha una **data** (`date`). Il mosaico di oggi è quello con la data
+più recente fino a oggi; l'archivio elenca solo quelli con data passata o
+odierna. Puoi caricare in anticipo mosaici con date future: compariranno da soli,
+uno al giorno. Vedi **[Il campo `date`](#il-campo-date--è-così-che-funziona-la-pubblicazione)**.
 
 ---
 
@@ -25,8 +25,9 @@ Apri `data/mosaics.json` e aggiungi un blocco in fondo all'elenco (prima della `
 ```json
 {
   "id": "identificativo-univoco-senza-spazi",
+  "date": "2026-09-15",
   "commonsFile": "Nome esatto del file su Wikimedia Commons.jpg",
-  "credit": "Foto: Nome Autore — CC BY-SA 4.0",
+  "credit": "Nome Autore — CC BY-SA 4.0",
   "license": "CC BY-SA 4.0",
   "title":       { "it": "Titolo",            "en": "Title" },
   "place":       { "it": "Luogo, città",      "en": "Place, city" },
@@ -37,6 +38,19 @@ Apri `data/mosaics.json` e aggiungi un blocco in fondo all'elenco (prima della `
 ```
 
 Ricordati la **virgola** tra un blocco e l'altro.
+
+### Il campo `date` — è così che funziona la pubblicazione
+
+- `date` è il **giorno in cui il mosaico diventa pubblico** (formato `AAAA-MM-GG`).
+- Il **mosaico di oggi** = quello con la data più recente **fino a oggi compreso**.
+- L'**archivio mostra solo i mosaici con data passata o odierna**: quelli con
+  data futura restano invisibili finché non arriva il loro giorno.
+- Il **numero** (N. 1, N. 2, …) è assegnato in automatico in base all'ordine
+  delle date: non devi gestirlo tu.
+
+Quindi puoi **preparare in anticipo** dieci mosaici con dieci date future, fare
+un solo push, e il sito ne scoprirà uno al giorno da solo. L'ordine dei blocchi
+dentro il file non conta: conta solo `date`.
 
 ### Come trovare `commonsFile`, `credit` e `license`
 
@@ -128,5 +142,10 @@ python3 -m http.server 8000
 poi apri <http://localhost:8000>. (Serve un server locale: aprendo il file
 direttamente, il browser blocca il caricamento di `mosaics.json`.)
 
-Per vedere i mosaici successivi/precedenti nella rotazione:
-`index.html?d=1`, `index.html?d=2`, … Per forzare la lingua: `?lang=en`.
+Per rivedere i mosaici dei giorni scorsi: `index.html?d=-1`, `index.html?d=-2`, …
+(oppure usa l'archivio). Per forzare la lingua: `?lang=en`.
+
+Per **provare come apparirà un giorno futuro** senza cambiare l'orologio del
+computer, apri la console del browser e imposta una data fittizia prima di
+ricaricare — oppure, più semplice, dai a un mosaico la data di oggi per vederlo
+subito in prima pagina.

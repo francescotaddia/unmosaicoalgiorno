@@ -10,10 +10,6 @@ window.SITE_CONFIG = {
   /* Lingua di default: "it" oppure "en" */
   defaultLang: "it",
 
-  /* Data di partenza della rotazione (NON cambiarla dopo il lancio).
-     Start date of the daily rotation (do NOT change after launch). */
-  epoch: "2026-01-01",
-
   /* ----------------------------------------------------------
      PUBBLICITÀ / ADVERTISING
      ----------------------------------------------------------

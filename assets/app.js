@@ -17,14 +17,16 @@
       archive: "Archivio",
       home: "Oggi",
       backHome: "Torna a oggi",
-      allMosaics: "Tutti i mosaici",
+      allMosaics: "L'archivio",
+      archiveIntro: "Tutti i mosaici pubblicati finora, dal più recente.",
       photo: "Foto",
       source: "Scheda su Wikimedia Commons",
       loadError: "Impossibile caricare i dati dei mosaici.",
       notFound: "Mosaico non trovato.",
-      number: "Mosaico n.",
-      of: "di",
-      langLabel: "EN"
+      upcoming: "Questo mosaico sarà pubblicato il",
+      number: "N.",
+      langLabel: "EN",
+      months: ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"]
     },
     en: {
       tagline: "One mosaic a day, with its story.",
@@ -34,14 +36,16 @@
       archive: "Archive",
       home: "Today",
       backHome: "Back to today",
-      allMosaics: "All mosaics",
+      allMosaics: "The archive",
+      archiveIntro: "Every mosaic published so far, newest first.",
       photo: "Photo",
       source: "File page on Wikimedia Commons",
       loadError: "Could not load the mosaic data.",
       notFound: "Mosaic not found.",
-      number: "Mosaic no.",
-      of: "of",
-      langLabel: "IT"
+      upcoming: "This mosaic will be published on",
+      number: "No.",
+      langLabel: "IT",
+      months: ["January","February","March","April","May","June","July","August","September","October","November","December"]
     }
   };
 
@@ -64,6 +68,21 @@
   var LANG = getLang();
   var t = UI[LANG];
 
+  /* ---------- Date ---------- */
+  function todayStr() {
+    var n = new Date();
+    return n.getFullYear() + "-" +
+      String(n.getMonth() + 1).padStart(2, "0") + "-" +
+      String(n.getDate()).padStart(2, "0");
+  }
+  function formatDate(iso) {
+    var p = String(iso || "").split("-");
+    if (p.length !== 3) return iso || "";
+    var day = parseInt(p[2], 10);
+    var mon = t.months[parseInt(p[1], 10) - 1] || "";
+    return day + " " + mon + " " + p[0];
+  }
+
   /* ---------- Immagini da Wikimedia Commons ---------- */
   function commonsImg(file, width) {
     var name = encodeURIComponent(file.replace(/ /g, "_"));
@@ -71,18 +90,6 @@
   }
   function commonsPage(file) {
     return "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(file.replace(/ /g, "_"));
-  }
-
-  /* ---------- Rotazione giornaliera ---------- */
-  function dayNumber() {
-    var ep = new Date((CFG.epoch || "2026-01-01") + "T00:00:00");
-    var now = new Date();
-    var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    return Math.floor((startOfToday - ep) / 86400000);
-  }
-  function todayIndex(len) {
-    var d = dayNumber();
-    return ((d % len) + len) % len;
   }
 
   /* ---------- Utility DOM ---------- */
@@ -99,6 +106,19 @@
     return n;
   }
   function pick(obj) { return (obj && (obj[LANG] || obj.it || obj.en)) || ""; }
+
+  /* Ordina per data crescente e assegna il numero progressivo */
+  function prepare(list) {
+    var sorted = list.slice().sort(function (a, b) {
+      return String(a.date).localeCompare(String(b.date));
+    });
+    sorted.forEach(function (m, i) { m._n = i + 1; });
+    return sorted;
+  }
+  function publishedOnly(sorted) {
+    var today = todayStr();
+    return sorted.filter(function (m) { return String(m.date) <= today; });
+  }
 
   /* ---------- Pubblicità ---------- */
   function injectAdHead() {
@@ -122,15 +142,35 @@
     });
   }
 
+  /* ---------- Titolo a mosaico ---------- */
+  function mosaicWordmark(text, extraClass) {
+    var wrap = el("span", { class: "wordmark " + (extraClass || ""), "aria-label": text });
+    var words = String(text).split(/\s+/).filter(Boolean);
+    words.forEach(function (word, wi) {
+      var w = el("span", { class: "wm-word", "aria-hidden": "true" });
+      word.split("").forEach(function (ch) {
+        w.appendChild(el("span", { class: "wm-l", text: ch }));
+      });
+      wrap.appendChild(w);
+      if (wi < words.length - 1) {
+        wrap.appendChild(el("span", { class: "wm-space", "aria-hidden": "true", html: "&nbsp;" }));
+      }
+    });
+    return wrap;
+  }
+
   /* ---------- Intestazione / piè di pagina ---------- */
   function buildChrome() {
     document.documentElement.lang = LANG;
+    var siteName = CFG.siteName || "Un mosaico al giorno";
+
     var header = document.querySelector("[data-chrome=header]");
     if (header) {
       header.innerHTML = "";
-      header.appendChild(el("a", { class: "brand", href: "index.html" }, [
-        el("span", { text: CFG.siteName || "Un mosaico al giorno" })
-      ]));
+      var brand = el("a", { class: "brand", href: "index.html" });
+      brand.appendChild(mosaicWordmark(siteName, "wordmark-sm"));
+      header.appendChild(brand);
+
       var nav = el("nav", { class: "nav" }, [
         el("a", { href: "index.html", text: t.home }),
         el("a", { href: "archivio.html", text: t.archive }),
@@ -141,12 +181,22 @@
       });
       header.appendChild(nav);
     }
+
+    var hero = document.querySelector("[data-chrome=hero]");
+    if (hero) {
+      hero.innerHTML = "";
+      var plate = el("div", { class: "hero-plate" }, [
+        mosaicWordmark(siteName, "wordmark-lg"),
+        el("p", { class: "hero-tagline", text: t.tagline })
+      ]);
+      hero.appendChild(plate);
+    }
+
     var footer = document.querySelector("[data-chrome=footer]");
     if (footer) {
       var year = new Date().getFullYear();
-      var bits = [CFG.siteName || "Un mosaico al giorno", "© " + year];
       footer.innerHTML = "";
-      footer.appendChild(el("p", { text: bits.join(" · ") }));
+      footer.appendChild(el("p", { text: siteName + " · © " + year }));
       footer.appendChild(el("p", { class: "muted", text:
         LANG === "it"
           ? "Immagini da Wikimedia Commons, ciascuna con il proprio autore e licenza."
@@ -155,8 +205,8 @@
     }
   }
 
-  /* ---------- Rendering di una scheda mosaico ---------- */
-  function mosaicArticle(m, label) {
+  /* ---------- Scheda mosaico ---------- */
+  function mosaicArticle(m, eyebrow) {
     var fig = el("figure", { class: "mosaic-figure" }, [
       el("img", {
         class: "mosaic-img",
@@ -172,40 +222,52 @@
 
     var meta = el("p", { class: "mosaic-meta", text: [pick(m.place), pick(m.period)].filter(Boolean).join(" — ") });
 
-    var body = el("div", { class: "mosaic-body" }, [
-      label ? el("p", { class: "eyebrow", text: label }) : null,
-      el("h1", { class: "mosaic-title", text: pick(m.title) }),
-      meta,
-      el("p", { class: "mosaic-text", text: pick(m.description) })
+    return el("article", { class: "mosaic" }, [
+      fig,
+      el("div", { class: "mosaic-body" }, [
+        eyebrow ? el("p", { class: "eyebrow", text: eyebrow }) : null,
+        el("h1", { class: "mosaic-title", text: pick(m.title) }),
+        meta,
+        el("p", { class: "mosaic-text", text: pick(m.description) })
+      ])
     ]);
+  }
 
-    return el("article", { class: "mosaic" }, [fig, body]);
+  function eyebrowFor(m) {
+    return t.number + " " + m._n + " · " + formatDate(m.date);
   }
 
   /* ---------- Pagine ---------- */
-  function renderToday(list) {
+  function renderToday(all) {
     var main = document.querySelector("[data-page=today]");
-    var i = todayIndex(list.length);
+    var sorted = prepare(all);
+    var pub = publishedOnly(sorted);
+    var pool = pub.length ? pub : sorted.slice(0, 1);
+
     var params = new URLSearchParams(location.search);
     var offset = parseInt(params.get("d") || "0", 10);
     if (!isFinite(offset)) offset = 0;
-    var idx = (((i + offset) % list.length) + list.length) % list.length;
-    var m = list[idx];
+    if (offset > 0) offset = 0;
 
-    var label = offset === 0
-      ? t.today
-      : (t.number + " " + (idx + 1) + " " + t.of + " " + list.length);
+    var last = pool.length - 1;
+    var pos = last + offset;
+    if (pos < 0) pos = 0;
+    if (pos > last) pos = last;
+    var m = pool[pos];
 
     main.innerHTML = "";
-    main.appendChild(mosaicArticle(m, label));
+    main.appendChild(mosaicArticle(m, eyebrowFor(m)));
 
-    var prevUrl = "index.html?d=" + (offset - 1);
-    var nextUrl = "index.html?d=" + (offset + 1);
-    var pager = el("nav", { class: "pager" }, [
-      el("a", { class: "pager-link", href: prevUrl, rel: "prev", text: "‹ " + t.prev }),
-      offset !== 0 ? el("a", { class: "pager-link", href: "index.html", text: t.backHome }) : el("span"),
-      el("a", { class: "pager-link", href: nextUrl, rel: "next", text: t.next + " ›" })
-    ]);
+    var pager = el("nav", { class: "pager" });
+    pager.appendChild(pos > 0
+      ? el("a", { class: "pager-link", href: "index.html?d=" + (offset - 1), rel: "prev", text: "‹ " + t.prev })
+      : el("span", { class: "pager-link is-off", text: "‹ " + t.prev }));
+    pager.appendChild(offset !== 0
+      ? el("a", { class: "pager-link", href: "index.html", text: t.backHome })
+      : el("span"));
+    pager.appendChild(pos < last
+      ? el("a", { class: "pager-link", href: "index.html?d=" + (offset + 1), rel: "next", text: t.next + " ›" })
+      : el("span", { class: "pager-link is-off", text: t.next + " ›" }));
     main.appendChild(pager);
     main.appendChild(el("div", { class: "ad-slot" }));
 
@@ -213,41 +275,52 @@
     setMeta("description", pick(m.description).slice(0, 155));
   }
 
-  function renderArchive(list) {
+  function renderArchive(all) {
     var main = document.querySelector("[data-page=archive]");
+    var pub = publishedOnly(prepare(all)).slice().reverse();
+
     main.innerHTML = "";
     main.appendChild(el("h1", { class: "page-title", text: t.allMosaics }));
+    main.appendChild(el("p", { class: "page-intro", text: t.archiveIntro }));
     main.appendChild(el("div", { class: "ad-slot" }));
 
     var grid = el("div", { class: "grid" });
-    list.forEach(function (m) {
-      var card = el("a", { class: "card", href: "mosaico.html?id=" + encodeURIComponent(m.id) }, [
+    pub.forEach(function (m) {
+      grid.appendChild(el("a", { class: "card", href: "mosaico.html?id=" + encodeURIComponent(m.id) }, [
         el("div", { class: "card-thumb" }, [
           el("img", { src: commonsImg(m.commonsFile, 600), alt: pick(m.title), loading: "lazy" })
         ]),
         el("div", { class: "card-info" }, [
+          el("p", { class: "card-date", text: t.number + " " + m._n + " · " + formatDate(m.date) }),
           el("h2", { class: "card-title", text: pick(m.title) }),
           el("p", { class: "card-place", text: pick(m.place) })
         ])
-      ]);
-      grid.appendChild(card);
+      ]));
     });
     main.appendChild(grid);
     main.appendChild(el("div", { class: "ad-slot" }));
     document.title = t.allMosaics + " — " + (CFG.siteName || "Un mosaico al giorno");
   }
 
-  function renderSingle(list) {
+  function renderSingle(all) {
     var main = document.querySelector("[data-page=single]");
     var id = new URLSearchParams(location.search).get("id");
-    var m = list.filter(function (x) { return x.id === id; })[0];
+    var sorted = prepare(all);
+    var m = sorted.filter(function (x) { return x.id === id; })[0];
+
     main.innerHTML = "";
     if (!m) {
       main.appendChild(el("p", { class: "notice", text: t.notFound }));
-      main.appendChild(el("p", [el("a", { href: "archivio.html", text: "← " + t.archive })]));
+      main.appendChild(el("p", [el("a", { href: "archivio.html", text: "← " + t.allMosaics })]));
       return;
     }
-    main.appendChild(mosaicArticle(m, null));
+    if (String(m.date) > todayStr()) {
+      main.appendChild(el("p", { class: "notice", text: t.upcoming + " " + formatDate(m.date) + "." }));
+      main.appendChild(el("p", [el("a", { href: "archivio.html", text: "← " + t.allMosaics })]));
+      document.title = (CFG.siteName || "Un mosaico al giorno");
+      return;
+    }
+    main.appendChild(mosaicArticle(m, eyebrowFor(m)));
     main.appendChild(el("div", { class: "ad-slot" }));
     main.appendChild(el("p", { class: "back" }, [el("a", { href: "archivio.html", text: "← " + t.allMosaics })]));
     document.title = pick(m.title) + " — " + (CFG.siteName || "Un mosaico al giorno");

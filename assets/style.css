@@ -50,11 +50,74 @@ img { display: block; max-width: 100%; height: auto; }
   flex-wrap: wrap;
 }
 
-.brand {
-  text-decoration: none;
+.brand { text-decoration: none; }
+
+/* ---------- Titolo a mosaico (tessere) ---------- */
+.wordmark {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 0.36em;
+  row-gap: 0.1em;
   font-family: var(--serif);
-  font-size: 1.28rem;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  line-height: 1.08;
+}
+.wm-word { display: inline-flex; white-space: nowrap; }
+.wm-space { display: none; }
+.wm-l {
+  display: inline-block;
+  color: transparent;
+  background-color: #bd8a3d;
+  background-image:
+    linear-gradient(rgba(15,9,3,0.7) 1.6px, transparent 1.6px),
+    linear-gradient(90deg, rgba(15,9,3,0.7) 1.6px, transparent 1.6px),
+    linear-gradient(118deg, #e6c063 0%, #cf9740 18%, #b5632f 38%, #8f7a4a 52%, #5f7d68 64%, #c58f3a 80%, #efd488 100%);
+  background-size: 0.26em 0.26em, 0.26em 0.26em, 165% 165%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 0.7px rgba(15,9,3,0.4);
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.18));
+}
+.wm-l:nth-child(3n)   { transform: translateY(-0.02em) rotate(-1.4deg); }
+.wm-l:nth-child(3n+1) { transform: translateY(0.016em) rotate(1.1deg); }
+.wm-l:nth-child(5n)   { transform: rotate(0.6deg); }
+.wm-l:nth-child(2n)   { background-position: 42% 58%, 42% 58%, 28% 70%; }
+.wm-l:nth-child(4n)   { background-position: 70% 20%, 70% 20%, 72% 24%; background-color: #a65c30; }
+.wm-l:nth-child(7n)   { background-position: 12% 34%, 12% 34%, 18% 80%; background-color: #5f7d68; }
+
+.wordmark-sm { font-size: 1.24rem; letter-spacing: 0.008em; }
+.wordmark-lg { font-size: clamp(2rem, 6.8vw, 3.4rem); letter-spacing: 0.012em; }
+
+.hero {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 30px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+.hero-plate {
+  display: inline-block;
+  padding: 22px 30px 24px;
+  border-radius: 8px;
+  background-color: #17120d;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.5) 1px, transparent 1px),
+    radial-gradient(circle at 30% 25%, #241d15, #14100b 70%);
+  background-size: 14px 14px, 14px 14px, 100% 100%;
+  box-shadow: inset 0 0 0 1px rgba(200,162,74,0.16), 0 8px 30px rgba(0,0,0,0.28);
+}
+.hero .wordmark { justify-content: center; }
+.hero-plate .wm-l { -webkit-text-stroke: 0.7px rgba(0,0,0,0.5); }
+.hero-tagline {
+  margin: 14px 0 0;
+  color: #b7ad9c;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.02rem;
 }
 
 .nav {
@@ -82,6 +145,7 @@ img { display: block; max-width: 100%; height: auto; }
 .lang-btn:hover { color: var(--ink); border-color: var(--accent); }
 
 .page { padding-top: 8px; padding-bottom: 64px; min-height: 60vh; }
+.hero + .page { padding-top: 28px; }
 
 /* ---------- Mosaico ---------- */
 .mosaic { margin: 0; }
@@ -149,12 +213,24 @@ img { display: block; max-width: 100%; height: auto; }
   white-space: nowrap;
 }
 .pager-link:hover { color: var(--accent); }
+.pager-link.is-off { opacity: 0.3; pointer-events: none; }
 
 /* ---------- Archivio ---------- */
 .page-title {
   font-family: var(--serif);
   font-size: 1.9rem;
-  margin: 8px 0 22px;
+  margin: 8px 0 8px;
+}
+.page-intro {
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+}
+.card-date {
+  margin: 0 0 5px;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 .grid {
@@ -222,6 +298,8 @@ img { display: block; max-width: 100%; height: auto; }
   .mosaic-title { font-size: 1.6rem; }
   .mosaic-text { font-size: 1.06rem; }
   .site-header { padding-top: 16px; padding-bottom: 16px; }
+  .hero { padding: 18px 20px 22px; }
+  .hero + .page { padding-top: 22px; }
 }
 
 /* ---------- Tema chiaro ---------- */
