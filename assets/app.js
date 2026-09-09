@@ -182,16 +182,6 @@
       header.appendChild(nav);
     }
 
-    var hero = document.querySelector("[data-chrome=hero]");
-    if (hero) {
-      hero.innerHTML = "";
-      var plate = el("div", { class: "hero-plate" }, [
-        mosaicWordmark(siteName, "wordmark-lg"),
-        el("p", { class: "hero-tagline", text: t.tagline })
-      ]);
-      hero.appendChild(plate);
-    }
-
     var footer = document.querySelector("[data-chrome=footer]");
     if (footer) {
       var year = new Date().getFullYear();

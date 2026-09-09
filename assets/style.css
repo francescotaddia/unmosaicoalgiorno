@@ -87,38 +87,7 @@ img { display: block; max-width: 100%; height: auto; }
 .wm-l:nth-child(4n)   { background-position: 70% 20%, 70% 20%, 72% 24%; background-color: #a65c30; }
 .wm-l:nth-child(7n)   { background-position: 12% 34%, 12% 34%, 18% 80%; background-color: #5f7d68; }
 
-.wordmark-sm { font-size: 1.24rem; letter-spacing: 0.008em; }
-.wordmark-lg { font-size: clamp(2rem, 6.8vw, 3.4rem); letter-spacing: 0.012em; }
-
-.hero {
-  width: 100%;
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 30px 20px;
-  text-align: center;
-  border-bottom: 1px solid var(--line);
-}
-.hero-plate {
-  display: inline-block;
-  padding: 22px 30px 24px;
-  border-radius: 8px;
-  background-color: #17120d;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.5) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.5) 1px, transparent 1px),
-    radial-gradient(circle at 30% 25%, #241d15, #14100b 70%);
-  background-size: 14px 14px, 14px 14px, 100% 100%;
-  box-shadow: inset 0 0 0 1px rgba(200,162,74,0.16), 0 8px 30px rgba(0,0,0,0.28);
-}
-.hero .wordmark { justify-content: center; }
-.hero-plate .wm-l { -webkit-text-stroke: 0.7px rgba(0,0,0,0.5); }
-.hero-tagline {
-  margin: 14px 0 0;
-  color: #b7ad9c;
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.02rem;
-}
+.wordmark-sm { font-size: 1.6rem; letter-spacing: 0.006em; }
 
 .nav {
   display: flex;
@@ -145,7 +114,6 @@ img { display: block; max-width: 100%; height: auto; }
 .lang-btn:hover { color: var(--ink); border-color: var(--accent); }
 
 .page { padding-top: 8px; padding-bottom: 64px; min-height: 60vh; }
-.hero + .page { padding-top: 28px; }
 
 /* ---------- Mosaico ---------- */
 .mosaic { margin: 0; }
@@ -298,8 +266,7 @@ img { display: block; max-width: 100%; height: auto; }
   .mosaic-title { font-size: 1.6rem; }
   .mosaic-text { font-size: 1.06rem; }
   .site-header { padding-top: 16px; padding-bottom: 16px; }
-  .hero { padding: 18px 20px 22px; }
-  .hero + .page { padding-top: 22px; }
+  .wordmark-sm { font-size: 1.4rem; }
 }
 
 /* ---------- Tema chiaro ---------- */
