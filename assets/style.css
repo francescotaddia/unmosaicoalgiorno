@@ -1,0 +1,237 @@
+/* ============================================================
+   Un mosaico al giorno — stile
+   ============================================================ */
+:root {
+  --bg: #12100e;
+  --bg-soft: #1b1815;
+  --ink: #f2ece1;
+  --ink-soft: #b7ad9c;
+  --line: #322c25;
+  --accent: #c8a24a;
+  --maxw: 940px;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.65;
+  font-size: 17px;
+}
+
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+
+/* ---------- Layout ---------- */
+.site-header,
+.site-footer,
+.page {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 22px;
+  padding-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  text-decoration: none;
+  font-family: var(--serif);
+  font-size: 1.28rem;
+  letter-spacing: 0.02em;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.nav a { text-decoration: none; color: var(--ink-soft); }
+.nav a:hover { color: var(--ink); }
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.lang-btn:hover { color: var(--ink); border-color: var(--accent); }
+
+.page { padding-top: 8px; padding-bottom: 64px; min-height: 60vh; }
+
+/* ---------- Mosaico ---------- */
+.mosaic { margin: 0; }
+
+.mosaic-figure { margin: 0 0 26px; }
+
+.mosaic-img {
+  width: 100%;
+  border-radius: 4px;
+  background: var(--bg-soft);
+}
+
+.credit {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.credit a { color: var(--ink-soft); }
+.credit a:hover { color: var(--accent); }
+
+.eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.74rem;
+  color: var(--accent);
+}
+
+.mosaic-title {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+
+.mosaic-meta {
+  margin: 0 0 18px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.mosaic-text {
+  font-family: var(--serif);
+  font-size: 1.14rem;
+  line-height: 1.72;
+  margin: 0;
+}
+
+/* ---------- Pager ---------- */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.pager-link {
+  text-decoration: none;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.pager-link:hover { color: var(--accent); }
+
+/* ---------- Archivio ---------- */
+.page-title {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  margin: 8px 0 22px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.card-thumb { aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg); }
+.card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-info { padding: 12px 14px 16px; }
+.card-title { font-family: var(--serif); font-size: 1.06rem; margin: 0 0 4px; }
+.card-place { margin: 0; font-size: 0.84rem; color: var(--ink-soft); }
+
+/* ---------- Pubblicità ---------- */
+.ad-slot {
+  margin: 34px 0 0;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.ad-slot.is-placeholder {
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 28px 12px;
+}
+
+/* ---------- Varie ---------- */
+.notice { font-family: var(--serif); font-size: 1.1rem; }
+.back { margin-top: 30px; font-size: 0.9rem; }
+.muted { color: var(--ink-soft); font-size: 0.8rem; }
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  padding-bottom: 48px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.site-footer p { margin: 0 0 6px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .mosaic-title { font-size: 1.6rem; }
+  .mosaic-text { font-size: 1.06rem; }
+  .site-header { padding-top: 16px; padding-bottom: 16px; }
+}
+
+/* ---------- Tema chiaro ---------- */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #faf7f1;
+    --bg-soft: #f0ebe1;
+    --ink: #241f18;
+    --ink-soft: #6d6353;
+    --line: #ddd4c4;
+    --accent: #9a7423;
+  }
+}
