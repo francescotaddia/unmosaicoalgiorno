@@ -246,6 +246,51 @@ img { display: block; max-width: 100%; height: auto; }
   padding: 28px 12px;
 }
 
+/* ---------- Approfondimenti ---------- */
+.further {
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.further-title {
+  margin: 0 0 12px;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.further-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+.further-link {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 0.86rem;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 13px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.further-link:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Bottone donazioni ---------- */
+.support { margin: 0 0 14px; }
+.support-btn {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: var(--bg);
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 600;
+}
+.support-btn:hover { filter: brightness(1.08); }
+
 /* ---------- Varie ---------- */
 .notice { font-family: var(--serif); font-size: 1.1rem; }
 .back { margin-top: 30px; font-size: 0.9rem; }

@@ -27,6 +27,11 @@
       upcoming: "Questo mosaico sarà pubblicato il",
       number: "N.",
       langLabel: "EN",
+      further: "Approfondimenti",
+      linkWikipedia: "Cerca su Wikipedia",
+      linkBooks: "Libri sull'argomento",
+      linkTours: "Visite guidate e biglietti",
+      affiliateNote: "Alcuni link sono affiliati: se acquisti tramite loro, il sito riceve una piccola commissione, senza costi aggiuntivi per te.",
       months: ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"]
     },
     en: {
@@ -47,6 +52,11 @@
       upcoming: "This mosaic will be published on",
       number: "No.",
       langLabel: "IT",
+      further: "Further reading",
+      linkWikipedia: "Search on Wikipedia",
+      linkBooks: "Books on this subject",
+      linkTours: "Guided tours & tickets",
+      affiliateNote: "Some links are affiliate links: if you buy through them, the site earns a small commission at no extra cost to you.",
       months: ["January","February","March","April","May","June","July","August","September","October","November","December"]
     }
   };
@@ -194,13 +204,27 @@
     var footer = document.querySelector("[data-chrome=footer]");
     if (footer) {
       var year = new Date().getFullYear();
+      var sup = CFG.support || {};
+      var aff = CFG.affiliates || {};
       footer.innerHTML = "";
+
+      if (sup.url) {
+        footer.appendChild(el("p", { class: "support" }, [
+          el("a", { class: "support-btn", href: sup.url, target: "_blank", rel: "noopener" },
+            [document.createTextNode(pick(sup.label) || (LANG === "it" ? "Offri un caffè" : "Buy me a coffee"))])
+        ]));
+      }
+
       footer.appendChild(el("p", { text: name + " · © " + year }));
       footer.appendChild(el("p", { class: "muted", text:
         LANG === "it"
           ? "Immagini da Wikimedia Commons, ciascuna con il proprio autore e licenza."
           : "Images from Wikimedia Commons, each with its own author and licence."
       }));
+
+      if (aff.amazonTag || aff.getYourGuidePartner) {
+        footer.appendChild(el("p", { class: "muted", text: t.affiliateNote }));
+      }
     }
   }
 
@@ -236,6 +260,62 @@
     return t.number + " " + m._n + " · " + formatDate(m.date);
   }
 
+  /* ---------- Approfondimenti / affiliazione ---------- */
+  function extLink(label, href, sponsored) {
+    return el("a", {
+      class: "further-link",
+      href: href,
+      target: "_blank",
+      rel: sponsored ? "noopener nofollow sponsored" : "noopener"
+    }, [document.createTextNode(label)]);
+  }
+
+  function furtherBlock(m) {
+    var aff = CFG.affiliates || {};
+    var wikiLang = LANG === "en" ? "en" : "it";
+    var titleQ = pick(m.title);
+    var titleBare = titleQ.split("(")[0].replace(/["“”]/g, "").trim();
+    var placeQ = (m.place && (m.place.en || m.place.it)) || "";
+    var placeShort = placeQ.split("(")[0].split(",")[0].trim();
+    var items = [];
+
+    /* link personalizzati dal file dati */
+    (m.links || []).forEach(function (lk) {
+      if (lk && lk.url) items.push(extLink(pick(lk.label) || lk.url, lk.url, false));
+    });
+
+    /* Wikipedia */
+    items.push(extLink(
+      t.linkWikipedia,
+      "https://" + wikiLang + ".wikipedia.org/w/index.php?search=" + encodeURIComponent(titleQ),
+      false
+    ));
+
+    /* Amazon: ricerca libri (con tag affiliato se configurato) */
+    var amzDomain = aff.amazonDomain || "www.amazon.it";
+    var amzUrl = "https://" + amzDomain + "/s?k=" +
+      encodeURIComponent(titleBare + " " + (LANG === "en" ? "mosaic" : "mosaico")) + "&i=stripbooks";
+    if (aff.amazonTag) amzUrl += "&tag=" + encodeURIComponent(aff.amazonTag);
+    items.push(extLink(t.linkBooks, amzUrl, !!aff.amazonTag));
+
+    /* GetYourGuide: solo se è stato indicato il partner id */
+    if (aff.getYourGuidePartner && placeShort) {
+      items.push(extLink(
+        t.linkTours,
+        "https://www.getyourguide.com/s/?q=" + encodeURIComponent(placeShort) +
+          "&partner_id=" + encodeURIComponent(aff.getYourGuidePartner),
+        true
+      ));
+    }
+
+    var links = el("div", { class: "further-links" });
+    items.forEach(function (a) { links.appendChild(a); });
+    return el("aside", { class: "further" }, [
+      el("h2", { class: "further-title", text: t.further }),
+      links
+    ]);
+  }
+
   /* ---------- Pagine ---------- */
   function renderToday(all) {
     var main = document.querySelector("[data-page=today]");
@@ -256,6 +336,7 @@
 
     main.innerHTML = "";
     main.appendChild(mosaicArticle(m, eyebrowFor(m)));
+    main.appendChild(furtherBlock(m));
 
     var pager = el("nav", { class: "pager" });
     pager.appendChild(pos > 0
@@ -320,6 +401,7 @@
       return;
     }
     main.appendChild(mosaicArticle(m, eyebrowFor(m)));
+    main.appendChild(furtherBlock(m));
     main.appendChild(el("div", { class: "ad-slot" }));
     main.appendChild(el("p", { class: "back" }, [el("a", { href: "archivio.html", text: "← " + t.allMosaics })]));
     document.title = pick(m.title) + " — " + siteName();

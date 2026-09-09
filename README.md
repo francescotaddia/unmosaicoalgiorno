@@ -133,6 +133,67 @@ Funziona con qualunque rete che dia codice HTML/JS.
 
 ---
 
+## Approfondimenti e affiliazione
+
+Sotto ogni mosaico c'è un riquadro **"Approfondimenti"** con:
+
+- **Cerca su Wikipedia** — sempre presente (nella lingua del sito)
+- **Libri sull'argomento** — ricerca su Amazon; diventa un link affiliato
+  (con commissione) solo se compili `affiliates.amazonTag`
+- **Visite guidate e biglietti** — ricerca su GetYourGuide; compare solo se
+  compili `affiliates.getYourGuidePartner`
+
+In `assets/config.js`:
+
+```js
+affiliates: {
+  amazonTag: "iltuoid-21",        // dal Programma Affiliazione Amazon
+  amazonDomain: "www.amazon.it",
+  getYourGuidePartner: ""         // dal programma partner GetYourGuide
+},
+support: {
+  url: "https://ko-fi.com/tuonome",   // vuoto = nessun bottone donazioni
+  label: { it: "Offri un caffè", en: "Buy me a coffee" }
+}
+```
+
+Quando `amazonTag` o `getYourGuidePartner` sono compilati, nel footer compare in
+automatico l'avviso richiesto dai programmi ("alcuni link sono affiliati…").
+
+### Attivare Amazon (passo per passo)
+
+1. Vai su **<https://programma-affiliazione.amazon.it>** e accedi con il tuo
+   normale account Amazon.
+2. Inserisci l'indirizzo del sito: `https://francescotaddia.github.io/unmosaicoalgiorno/`
+   (quando avrai il dominio, aggiungerai anche quello).
+3. Scegli un **identificativo per il sito** (es. `unmosaico-21`): è il tuo
+   `amazonTag`. Rispondi alle domande su argomento e provenienza del traffico.
+4. Amazon ti dà accesso subito in modalità di prova. Incolla il tag in
+   `affiliates.amazonTag`, fai commit e push.
+5. **Devi generare 3 vendite qualificate entro 180 giorni**, altrimenti l'account
+   viene chiuso (puoi ripresentare domanda). Fino ad allora i link funzionano e
+   tracciano già.
+6. Le commissioni sui libri sono ~5%. Pagamento via bonifico o buono regalo, con
+   soglia minima.
+
+> Aggiungi link affiliati **solo** ai programmi per cui sei stato approvato e
+> **solo** su siti che hai dichiarato nella domanda: è una regola di Amazon.
+
+### Link personalizzati per un singolo mosaico (facoltativo)
+
+In `data/mosaics.json`, dentro una scheda, puoi aggiungere:
+
+```json
+"links": [
+  { "label": { "it": "Sito ufficiale del monastero", "en": "Monastery website" },
+    "url": "https://..." }
+]
+```
+
+Compaiono in cima al riquadro "Approfondimenti", prima di Wikipedia.
+
+---
+
 ## Provare in locale
 
 ```bash

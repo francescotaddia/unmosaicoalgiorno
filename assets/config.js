@@ -35,6 +35,35 @@ window.SITE_CONFIG = {
     placeholder: { it: "Spazio pubblicitario", en: "Advertising space" }
   },
 
+  /* ----------------------------------------------------------
+     AFFILIAZIONE / AFFILIATE LINKS
+     ----------------------------------------------------------
+     Sotto ogni mosaico compare un riquadro "Approfondimenti"
+     con: link a Wikipedia (sempre), ricerca libri su Amazon,
+     e — se compilato — ricerca visite/biglietti.
+     ---------------------------------------------------------- */
+  affiliates: {
+    /* Il tuo ID affiliato Amazon, es. "unmosaico-21".
+       Vuoto = il link ad Amazon resta una ricerca normale (nessuna commissione). */
+    amazonTag: "",
+    /* Sito Amazon su cui mandare la ricerca libri */
+    amazonDomain: "www.amazon.it",
+
+    /* ID partner GetYourGuide (visite guidate e biglietti).
+       Vuoto = nessun link "visite" mostrato. */
+    getYourGuidePartner: ""
+  },
+
+  /* ----------------------------------------------------------
+     DONAZIONI / SUPPORT
+     ---------------------------------------------------------- */
+  support: {
+    /* Link a Ko-fi, Buy Me a Coffee, PayPal.me, ecc.
+       Vuoto = nessun bottone. */
+    url: "",
+    label: { it: "Offri un caffè", en: "Buy me a coffee" }
+  },
+
   /* Link facoltativi nel footer / Optional footer links */
   links: {
     about: "",      /* es. "pagina-chi-siamo.html" */
