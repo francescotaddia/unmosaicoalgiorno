@@ -4,8 +4,9 @@
    ============================================================ */
 
 window.SITE_CONFIG = {
-  /* Titolo mostrato nell'intestazione / Title shown in the header */
-  siteName: "Un mosaico al giorno",
+  /* Titolo mostrato nell'intestazione / Title shown in the header.
+     Puoi mettere una stringa unica, oppure { it: "...", en: "..." }. */
+  siteName: { it: "Un mosaico al giorno", en: "A Mosaic a Day" },
 
   /* Lingua di default: "it" oppure "en" */
   defaultLang: "it",

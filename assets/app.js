@@ -10,6 +10,7 @@
   /* ---------- Testi dell'interfaccia / UI strings ---------- */
   var UI = {
     it: {
+      siteName: "Un mosaico al giorno",
       tagline: "Ogni giorno un mosaico, con la sua storia.",
       today: "Il mosaico di oggi",
       prev: "Precedente",
@@ -29,6 +30,7 @@
       months: ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"]
     },
     en: {
+      siteName: "A Mosaic a Day",
       tagline: "One mosaic a day, with its story.",
       today: "Today's mosaic",
       prev: "Previous",
@@ -107,6 +109,13 @@
   }
   function pick(obj) { return (obj && (obj[LANG] || obj.it || obj.en)) || ""; }
 
+  /* Nome del sito: accetta una stringa oppure { it, en } */
+  function siteName() {
+    var s = CFG.siteName;
+    if (s && typeof s === "object") return s[LANG] || s.it || s.en || t.siteName;
+    return s || t.siteName;
+  }
+
   /* Ordina per data crescente e assegna il numero progressivo */
   function prepare(list) {
     var sorted = list.slice().sort(function (a, b) {
@@ -162,13 +171,13 @@
   /* ---------- Intestazione / piè di pagina ---------- */
   function buildChrome() {
     document.documentElement.lang = LANG;
-    var siteName = CFG.siteName || "Un mosaico al giorno";
+    var name = siteName();
 
     var header = document.querySelector("[data-chrome=header]");
     if (header) {
       header.innerHTML = "";
       var brand = el("a", { class: "brand", href: "index.html" });
-      brand.appendChild(mosaicWordmark(siteName, "wordmark-sm"));
+      brand.appendChild(mosaicWordmark(name, "wordmark-sm"));
       header.appendChild(brand);
 
       var nav = el("nav", { class: "nav" }, [
@@ -186,7 +195,7 @@
     if (footer) {
       var year = new Date().getFullYear();
       footer.innerHTML = "";
-      footer.appendChild(el("p", { text: siteName + " · © " + year }));
+      footer.appendChild(el("p", { text: name + " · © " + year }));
       footer.appendChild(el("p", { class: "muted", text:
         LANG === "it"
           ? "Immagini da Wikimedia Commons, ciascuna con il proprio autore e licenza."
@@ -261,7 +270,7 @@
     main.appendChild(pager);
     main.appendChild(el("div", { class: "ad-slot" }));
 
-    document.title = pick(m.title) + " — " + (CFG.siteName || "Un mosaico al giorno");
+    document.title = pick(m.title) + " — " + siteName();
     setMeta("description", pick(m.description).slice(0, 155));
   }
 
@@ -289,7 +298,7 @@
     });
     main.appendChild(grid);
     main.appendChild(el("div", { class: "ad-slot" }));
-    document.title = t.allMosaics + " — " + (CFG.siteName || "Un mosaico al giorno");
+    document.title = t.allMosaics + " — " + siteName();
   }
 
   function renderSingle(all) {
@@ -307,13 +316,13 @@
     if (String(m.date) > todayStr()) {
       main.appendChild(el("p", { class: "notice", text: t.upcoming + " " + formatDate(m.date) + "." }));
       main.appendChild(el("p", [el("a", { href: "archivio.html", text: "← " + t.allMosaics })]));
-      document.title = (CFG.siteName || "Un mosaico al giorno");
+      document.title = siteName();
       return;
     }
     main.appendChild(mosaicArticle(m, eyebrowFor(m)));
     main.appendChild(el("div", { class: "ad-slot" }));
     main.appendChild(el("p", { class: "back" }, [el("a", { href: "archivio.html", text: "← " + t.allMosaics })]));
-    document.title = pick(m.title) + " — " + (CFG.siteName || "Un mosaico al giorno");
+    document.title = pick(m.title) + " — " + siteName();
     setMeta("description", pick(m.description).slice(0, 155));
   }
 
